@@ -1,18 +1,12 @@
 package view;
+import model.Role;
 import model.User;
 
 public class App {
     public static void main(String[] args) {
-        User u1 = new User("carlo", "1234567");
-        User u2 = new User("ramiro", "7654321");
-        u2.addUser("josefino", "micontrasena");
-
-        u1.deleteUser();
-        
-        for(User u: User.getUsers()){
-            if(u != null){
-                System.out.println(u.getUSER_ID());
-            }
-        }
+        User u1 = new User("anthony", "123", Role.ADMINISTRATOR);
+        u1.addUser("ra", "123", Role.STANDARD);
+        u1.setName("josefo");
+        System.out.println(u1.getName());
     }
 }
