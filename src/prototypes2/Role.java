@@ -1,4 +1,4 @@
-package model;
+package prototypes2;
 
 public enum Role {
     ADMINISTRATOR,

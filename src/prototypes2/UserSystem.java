@@ -1,6 +1,4 @@
-package controller;
-import model.Role;
-import model.User;
+package prototypes2;
 
 public class UserSystem {
     private static User[] users = new User[100];
@@ -42,7 +40,7 @@ public class UserSystem {
 
             for (int i = 0; i < users.length; i++) {
                 if (users[i] != null) {
-                    if (users[i].getUSER_NAME() == userName) {
+                    if (users[i].getUSER_NAME().equals(userName)) {
                         return users[i];
                     }
                 }
@@ -57,8 +55,13 @@ public class UserSystem {
         }
     }
 
-    public void setName(User userToEdit, String name) {
-        userToEdit.setName(name);
+    public void setName(User userAsking, User targetUser, String name) {
+        if(userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser){
+            targetUser.setName(name);
+        }else{
+            System.out.println("Su rol de usuario es " + userAsking.getRole() 
+            + ". No tiene permitido modificar nombres de otros usuarios");
+        }
     }
 
     public String getName(User userAsking, User targetUser) {
@@ -73,11 +76,16 @@ public class UserSystem {
 
     // no administrador
     public void setPassword(User userAsking, User targetUser, String oldPassword, String newPassword) {
-        targetUser.setPassword(userAsking, oldPassword, newPassword);
+        if(userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser){
+            targetUser.setPassword(userAsking, oldPassword, newPassword);
+        } else{
+            System.out.println("Su usuario es " +  userAsking.getRole() 
+            + ". No puede modificar la contraseña de otros usuarios");
+        }
     }
 
     // administrador
-    public void setPassword(User userAsking, User targetUser, String newPassword) {
+    public void setPasswordIfAdmin(User userAsking, User targetUser, String newPassword) {
         targetUser.setPassword(userAsking, null, newPassword);
     }
 
@@ -121,8 +129,8 @@ public class UserSystem {
         }
     }
 
-    public void setRole(User userAsking, Role role) {
-        userAsking.setRole(role);
+    public void setRole(User userAsking, User targetUser, Role role) {
+        targetUser.setRole(userAsking, role);
     }
 
     public Role getRole(User userAsking, User targetUser) {
@@ -145,8 +153,8 @@ public class UserSystem {
         }
     }
 
-    public void setUSER_ID(User userAsking, User targetUser, Integer newId) {
-        userAsking.setUSER_ID(targetUser, newId);
+    public void setUSER_ID(User userAsking, User targetUser, Integer newUserId) {
+        targetUser.setUSER_ID(userAsking, newUserId);
     }
 
     public String getUSER_NAME(User userAsking, User targetUser) {
@@ -160,13 +168,14 @@ public class UserSystem {
     }
 
     public void setUSER_NAME(User userAsking, User targetUser, String newUserName) {
-        userAsking.setUSER_NAME(targetUser, newUserName);
+        targetUser.setUSER_NAME(userAsking, newUserName);
     }
 
     public static User[] getUsers(User userAsking) {
         if(userAsking.getRole() == Role.ADMINISTRATOR){
             return users;
-        }else{
+        } else {
+            System.out.println("atun");
             return null;
         }
     }

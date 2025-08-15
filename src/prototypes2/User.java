@@ -1,8 +1,7 @@
-package model;
-import controller.UserSystem;
+package prototypes2;
 
 public class User {
-    private static User[] users;
+    //private static User[] users;
     private String name;
     private String password;
     private Role role;
@@ -14,23 +13,22 @@ public class User {
         this.name = name;
         this.password = password;
         this.role = role;
-
         this.USER_ID = id_generator;
         User.id_generator++;
         this.USER_NAME = name + USER_ID;
-        users = UserSystem.getUsers(this);
+        //users = UserSystem.getUsers(this);
     }
 
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
-        if (this.getRole() == Role.ADMINISTRATOR) {
+    public void setRole(User userAsking, Role role) {
+        if (userAsking.getRole() == Role.ADMINISTRATOR) {
             this.role = role;
         } else {
             System.out.println(
-                    "Su rol de usuario es " + this.getRole() + ". No puede cambiar el rol de ningún usuario");
+                    "Su rol de usuario es " + userAsking.getRole() + ". No puede cambiar el rol de ningún usuario");
         }
     }
 
@@ -38,25 +36,25 @@ public class User {
         return USER_ID;
     }
 
-    public void setUSER_ID(User targetUser, Integer newUserId) {
-        if (this.getRole() == Role.ADMINISTRATOR) {
+    public void setUSER_ID(User userAsking, Integer newUserId) {
+        if (userAsking.getRole() == Role.ADMINISTRATOR) {
 
             for (User u : users) {
 
                 if (u != null) {
                     if (u.getUSER_ID() == newUserId) {
                         System.out.println("El usuario " + u.getUSER_NAME()
-                                + " ya posee este ID");
-                    } else {
-                        this.USER_ID = newUserId;
-                        System.out.println("ID de usuario cambiado exitosamente");
-                        break;
+                                + " ya posee este ID.");
+                        return;
                     }
                 }
 
             }
+
+            this.USER_ID = newUserId;
+            System.out.println("ID de usuario cambiado exitosamente");
         } else {
-            System.out.println("Su rol de usuario es " + this.getRole()
+            System.out.println("Su rol de usuario es " + userAsking.getRole()
                     + ". No tiene permitido editar el ID de ningún usuario");
         }
     }
@@ -69,13 +67,14 @@ public class User {
 
         if (userAsking.getRole() == Role.ADMINISTRATOR) {
             this.password = newPassword;
+            System.out.println("contraseña reestablecida");
         } else {
             if (this.password.equals(oldPassword)) {
                 this.password = newPassword;
                 System.out.println("\ncontraseña reestablecida");
             } else {
-                System.out.println("contraseña invalida");
-                System.out.println("la contraseña no fue modificada");
+                System.out.println("contraseña invalida o su rol no es de administrador");
+                System.out.println("la contraseña no fue modificada.");
             }
         }
     }
@@ -92,25 +91,24 @@ public class User {
         return USER_NAME;
     }
 
-    public void setUSER_NAME(User targetUser, String newUserName) {
-        if (this.getRole() == Role.ADMINISTRATOR || this == targetUser) {
+    public void setUSER_NAME(User userAsking, String newUserName) {
+        if (userAsking.getRole() == Role.ADMINISTRATOR || this == userAsking) {
 
             for (User u : users) {
 
                 if (u != null) {
                     if (u.getUSER_NAME().equals(newUserName)) {
-                        System.out.println("El usuario " + u.getUSER_NAME()
-                                + " ya posee este nombre de usuario");
-                    } else {
-                        this.USER_NAME = newUserName;
-                        System.out.println("nombre de usuario cambiado exitosamente");
-                        break;
+                        System.out.println("El usuario con id: " + u.getUSER_ID()
+                                + " , ya posee este nombre de usuario. Debe seleccionar un nombre de usuario unico para cada usuario");
+                        return;
                     }
                 }
             }
 
+            this.USER_NAME = newUserName;
+            System.out.println("nombre de usuario cambiado exitosamente");
         } else {
-            System.out.println("Su rol de usuario es " + this.getRole()
+            System.out.println("Su rol de usuario es " + userAsking.getRole()
                     + ". No tiene permitido editar el nombre de usuario de otros usuarios");
         }
     }
