@@ -14,7 +14,7 @@ public class UserSystem {
             String name = input.nextLine();
             System.out.print("Seleccione su contraseña inicial: ");
             String password = input.nextLine();
-            users[usersIndex++] = new User(name, password, Role.ADMINISTRATOR);
+            users[usersIndex++] = new User(name, password, Role.ADMIN);
             System.out.println("\n:::::::::Usuario administrador establecido::::::::::\n");
             System.out.println("su información de inicio de sesión:\n");
             System.out.println("nombre de usuario: " + users[0].getuserName());
@@ -38,9 +38,11 @@ public class UserSystem {
      * @param newUser instancia de tipo User que se solicita agregar
      */
     public void addUser(User creator, String name, String password, Role role) {
-        if (creator.getRole() == Role.ADMINISTRATOR) {
-            // asigna a posicion actual del arreglo e incrementa su indice en 1
+        if (creator.getRole() == Role.ADMIN) {
             users[usersIndex++] = new User(name, password, role);
+            System.out.println("\nUsuario añadido exitosamente\n");
+            System.out.println("nombre de usuario: " + users[usersIndex-1].getuserName());
+            System.out.println("contraseña: " + users[usersIndex-1].getPassword());
         } else {
             System.err.println("Su rol es " + creator.getRole() + ". No puede agregar usuarios");
         }
@@ -52,7 +54,7 @@ public class UserSystem {
      * @param targetUser instancia de tipo User que se solicita eliminar
      */
     public void deleteUser(User userAsking, User targetUser) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
             for (int i = 0; i < usersIndex; i++) {
 
                 if (users[i] == targetUser) {
@@ -84,7 +86,7 @@ public class UserSystem {
      * @param role       el rol nuevo que se desea asignar a la instancia targetUser
      */
     public void setRole(User userAsking, User targetUser, Role role) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
             targetUser.setRole(role);
             System.out.println("Rol cambiado exitosamente");
         } else {
@@ -99,7 +101,7 @@ public class UserSystem {
      *         es él mismo. De lo contrario retorna null
      */
     public Role getRole(User userAsking, User targetUser) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             return targetUser.getRole();
         } else {
             System.out.println("Su rol de usario es " + userAsking.getRole()
@@ -115,7 +117,7 @@ public class UserSystem {
      *                   asignar a targetUser
      */
     public void setName(User userAsking, User targetUser, String name) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             targetUser.setName(name);
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -130,7 +132,7 @@ public class UserSystem {
      *         si es él mismo. De lo contrario retorna null
      */
     public String getName(User userAsking, User targetUser) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             return targetUser.getName();
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -145,7 +147,7 @@ public class UserSystem {
      * @param newPassword password que reemplazara al actual
      */
     public void setPassword(User userAsking, User targetUser, String oldPassword, String newPassword) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
             targetUser.setPassword(newPassword);
             System.out.println("contraseña reestablecida");
         } else {
@@ -166,7 +168,7 @@ public class UserSystem {
      *         o si es él mismo. De lo contrario retorna null
      */
     public String getPassword(User userAsking, User targetUser) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             return targetUser.getPassword();
         } else {
             System.out.println(
@@ -181,7 +183,7 @@ public class UserSystem {
      *                   su ID
      */
     public void setuserId(User userAsking, User targetUser, Integer newUserId) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
 
             // se verifica que el ID no lo tenga otro usuario
             for (User u : users) {
@@ -205,7 +207,7 @@ public class UserSystem {
      *         contrario retorna null
      */
     public Integer getuserId(User userAsking, User targetUser) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
             return targetUser.getuserId();
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -220,7 +222,7 @@ public class UserSystem {
      * @param newUserName instancia de tipo String con el nombre nuevo de userName
      */
     public void setuserName(User userAsking, User targetUser, String newUserName) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
 
             // se verifica si el userName ya lo tiene otro usuario
             for (User u : users) {
@@ -244,7 +246,7 @@ public class UserSystem {
      *         si es él mismo. De lo contrario retorna null
      */
     public String getuserName(User userAsking, User targetUser) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR || userAsking == targetUser) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             return targetUser.getuserName();
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -262,13 +264,13 @@ public class UserSystem {
      *         contrario retorna null
      */
     public User findUserById(User userAsking, Integer userId) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
             for (int i = 0; i < usersIndex; i++) {
                 if (users[i] != null && users[i].getuserId().equals(userId)) {
                     return users[i];
                 }
             }
-            System.out.println("El usuario no se encuentra registrado");
+            System.out.println("No se encontró un usuario con el ID especificado.");
             return null;
         } else {
             System.out.println("Su rol del usuario es " + userAsking.getRole()
@@ -286,7 +288,7 @@ public class UserSystem {
      *         contrario retorna null
      */
     public User findUserByUserName(User userAsking, String userName) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
             for (int i = 0; i < usersIndex; i++) {
                 if (users[i] != null && users[i].getuserName().equals(userName)) {
                     return users[i];
@@ -310,7 +312,7 @@ public class UserSystem {
      *         que contiene solamente los datos de userAsking
      */
     public static User[] getUsers(User userAsking) {
-        if (userAsking.getRole() == Role.ADMINISTRATOR) {
+        if (userAsking.getRole() == Role.ADMIN) {
             return users;
         } else {
             User[] self = new User[1];

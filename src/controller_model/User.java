@@ -20,7 +20,7 @@ public class User {
     // no pueda acceder a User y alterarlo. Como User y UserSystem estan en el mismo
     // paquete, UserSystem sí puede modificar datos de User.
 
-    public Role getRole() {
+    Role getRole() {
         return role;
     }
 
