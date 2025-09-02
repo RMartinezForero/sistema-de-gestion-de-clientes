@@ -119,6 +119,7 @@ public class UserSystem {
     public void setName(User userAsking, User targetUser, String name) {
         if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             targetUser.setName(name);
+            System.out.println("nombre asignado exitosamente");
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
                     + ". No tiene permitido modificar nombres de otros usuarios");
@@ -264,7 +265,7 @@ public class UserSystem {
      *         contrario retorna null
      */
     public User findUserById(User userAsking, Integer userId) {
-        if (userAsking.getRole() == Role.ADMIN) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking.getuserId() == userId) {
             for (int i = 0; i < usersIndex; i++) {
                 if (users[i] != null && users[i].getuserId().equals(userId)) {
                     return users[i];
@@ -274,7 +275,7 @@ public class UserSystem {
             return null;
         } else {
             System.out.println("Su rol del usuario es " + userAsking.getRole()
-                    + ". No tiene permitido consultar información de otros usuarios");
+                    + ". No tiene permitido consultar o modificar la información de otros usuarios");
             return null;
         }
     }
@@ -288,7 +289,7 @@ public class UserSystem {
      *         contrario retorna null
      */
     public User findUserByUserName(User userAsking, String userName) {
-        if (userAsking.getRole() == Role.ADMIN) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking.getuserName().equals(userName)) {
             for (int i = 0; i < usersIndex; i++) {
                 if (users[i] != null && users[i].getuserName().equals(userName)) {
                     return users[i];
@@ -298,8 +299,18 @@ public class UserSystem {
             return null;
         } else {
             System.out.println("Su rol del usuario es " + userAsking.getRole()
-                    + ". No tiene permitido consultar información de otros usuarios");
+                    + ". No tiene permitido consultar o modificar la información de otros usuarios");
             return null;
+        }
+    }
+
+    public void printUserData(User userAsking, User targetUser){
+        if(userAsking.getRole() == Role.ADMIN || userAsking == targetUser){
+            String userData = targetUser.userData();
+            System.out.println(userData);
+        }else{
+            System.out.println("Su rol del usuario es " + userAsking.getRole()
+            + ". No tiene permitido consultar o modificar la información de otros usuarios");
         }
     }
 

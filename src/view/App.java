@@ -6,7 +6,8 @@ import controller_model.*;
 
 public class App {
     public static void main(String[] args) {
-        //TODO: cerrar input?
+        // TODO: cerrar input?
+        // TODO: borrar prototypes
         Scanner input = new Scanner(System.in);
         UserSystem s1 = new UserSystem();
         User user;
@@ -65,16 +66,19 @@ public class App {
                 if (answer < 1 || answer > 15) {
                     System.err.println("Respuesta invalida. Intentelo nuevamente");
                 } else {
+                    User userToConsult;
 
                     switch (answer) {
                         case 1:
-                            if (isAdmin(user,s1)) {
+                            if (isAdmin(user, s1)) {
                                 s1.addUser(user, askName(input), askPassword(input), askRole(input));
+                            } else {
+                                System.out.println("su rol de usuario no tiene permitida esta acción");
                             }
                             break;
                         case 2:
                             // si es el "superadministrador" , no puede borrarse
-                            if (isAdmin(user,s1)) {
+                            if (isAdmin(user, s1)) {
                                 User userToDelete = s1.findUserByUserName(user, askUserName(input));
 
                                 if (userToDelete == s1.getUsers(user)[0]) {
@@ -91,11 +95,153 @@ public class App {
                                 } else {
                                     s1.deleteUser(user, userToDelete);
                                 }
+                            } else {
+                                System.out.println("su rol de usuario no tiene permitida esta accion");
                             }
                             break;
                         case 3:
-                            //TODO: voy aqui
-                            break;                            
+                            if (isAdmin(user, s1)) {
+                                User userToModify = s1.findUserByUserName(user, askUserName(input));
+
+                                if (userToModify == s1.getUsers(user)[0]) {
+                                    System.out.println("No puede cambiarse el rol del administrador principal");
+                                    break;
+                                } else {
+                                    s1.setRole(user, userToModify, askRole(input));
+                                }
+                            } else {
+                                System.out.println("su rol de usuario no tiene permitida esta acción");
+                            }
+                            break;
+                        case 4:
+                            userToConsult = s1.findUserByUserName(user, askUserName(input));
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            Role role = s1.getRole(user, userToConsult);
+                            System.out.println("el rol del usuario es: " + role);
+                            break;
+                        case 5:
+                            System.out.print("nombre de usuario del usuario a quien desea asignar nombre completo: ");
+                            String userName = input.nextLine();
+                            User targetUser = s1.findUserByUserName(user, userName);
+
+                            if (targetUser == null) {
+                                break;
+                            }
+
+                            s1.setName(user, targetUser, askName(input));
+                            break;
+                        case 6:
+                            userToConsult = s1.findUserByUserName(user, askUserName(input));
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            String name = s1.getName(user, userToConsult);
+                            System.out.println("el nombre completo del usuario es: " + name);
+                            break;
+                        case 7:
+                            userToConsult = s1.findUserByUserName(user, askUserName(input));
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            if (isAdmin(user, s1)) {
+                                System.out.print("password nuevo: ");
+                                String newPassword = input.nextLine();
+                                s1.setPassword(user, userToConsult, null, newPassword);
+                            } else {
+                                System.out.print("password actual: ");
+                                String oldPassword = input.nextLine();
+                                System.out.print("password nuevo: ");
+                                String newPassword = input.nextLine();
+                                s1.setPassword(user, userToConsult, oldPassword, newPassword);
+                            }
+                            break;
+                        case 8:
+                            userToConsult = s1.findUserByUserName(user, askUserName(input));
+
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            String password = s1.getPassword(user, userToConsult);
+                            System.out.println("la contraseña del usuario es: " + password);
+                            break;
+                        case 9:
+                            if (isAdmin(user, s1)) {
+                                userToConsult = s1.findUserByUserName(user, askUserName(input));
+
+                                if (userToConsult == null) {
+                                    break;
+                                }
+
+                                System.out.print("nuevo ID de usuario: ");
+                                Integer newUserId = Integer.parseInt(input.nextLine());
+                                s1.setuserId(user, userToConsult, newUserId);
+                            } else {
+                                System.out.println("Su rol de usuario no tiene permitida esta acción");
+                            }
+                            break;
+                        case 10:
+                            if (isAdmin(user, s1)) {
+                                userToConsult = s1.findUserByUserName(user, askUserName(input));
+
+                                if (userToConsult == null) {
+                                    break;
+                                }
+
+                                Integer userId = s1.getuserId(user, userToConsult);
+                                System.out.print("el ID del usuario es: " + userId);
+                            } else {
+                                System.out.println("Su rol de usuario no tiene permitida esta acción");
+                            }
+                            break;
+                        case 11:
+                            userToConsult = s1.findUserByUserName(user, askUserName(input));
+
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            System.out.print("nuevo nombre de usuario: ");
+                            String newUserName = input.nextLine();
+                            s1.setuserName(user, userToConsult, newUserName);
+                            break;
+                        case 12:
+                            userToConsult = s1.findUserByUserName(user, askUserName(input));
+
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            String userNameConsult = s1.getuserName(user, userToConsult);
+                            System.out.print("el nombre de usuario del usuario solicitado es: " + userNameConsult);
+                            break;
+                        case 13:
+                            System.out.print("ID del usuario a consultar: ");
+                            Integer userId = Integer.parseInt(input.nextLine());
+                            userToConsult = s1.findUserById(user, userId);
+
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            s1.printUserData(user, userToConsult);
+                            break;
+                        case 14:
+                            System.out.print("nombre de usuario del usuario a consultar: ");
+                            String userNameToConsult = input.nextLine();
+                            userToConsult = s1.findUserByUserName(user, userNameToConsult);
+
+                            if (userToConsult == null) {
+                                break;
+                            }
+
+                            s1.printUserData(user, userToConsult);
+                            break;
                         case 15:
                             exit = true;
                             System.out.println("\n------------------------------------------------------");
@@ -106,6 +252,7 @@ public class App {
                             break;
                     }
 
+                    pauseGenerator(input);
                 }
 
             } while (exit == false);
@@ -117,8 +264,7 @@ public class App {
     }
 
     public static boolean isAdmin(User user, UserSystem system) {
-        if(system.getRole(user,user) != Role.ADMIN){
-            System.out.println("su rol de usuario no tiene permitida esta accion");
+        if (system.getRole(user, user) != Role.ADMIN) {
             return false;
         }
 
@@ -144,8 +290,14 @@ public class App {
     }
 
     public static String askUserName(Scanner input) {
-        System.out.print("nombre de usuario: ");
+        System.out.print("nombre de usuario del usuario objetivo: ");
         String userName = input.nextLine();
         return userName;
     }
+
+    public static void pauseGenerator(Scanner input){
+        System.out.println("\nPresione ENTER para continuar: ");
+        String string = input.nextLine();
+    }
+
 }

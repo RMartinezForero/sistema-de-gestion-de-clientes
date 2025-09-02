@@ -59,4 +59,10 @@ public class User {
     void setPassword(String password) {
         this.password = password;
     }
+
+    String userData() {
+        return "User [name=" + name + ", password=" + password + ", role=" + role + ", userId=" + userId + ", userName="
+                + userName + "]";
+    }
+
 }
