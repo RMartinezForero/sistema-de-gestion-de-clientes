@@ -20,6 +20,7 @@ public class UserSystem {
             System.out.println("nombre de usuario: " + users[0].getuserName());
             System.out.println("contraseña: " + users[0].getPassword());
             System.out.println();
+            input.close();
         }
     }
 
@@ -352,6 +353,5 @@ public class UserSystem {
             return null;
         }
     }
-
 
 }

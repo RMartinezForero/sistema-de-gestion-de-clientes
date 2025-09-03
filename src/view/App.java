@@ -5,7 +5,6 @@ import java.util.Scanner;
 import controller_model.*;
 
 public class App {
-    //TODO: pensar en el input de todas las clase si cerrarlo
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         UserSystem s1 = new UserSystem();
