@@ -5,9 +5,8 @@ import java.util.Scanner;
 import controller_model.*;
 
 public class App {
+    //TODO: pensar en el input de todas las clase si cerrarlo
     public static void main(String[] args) {
-        // TODO: cerrar input?
-        // TODO: borrar prototypes
         Scanner input = new Scanner(System.in);
         UserSystem s1 = new UserSystem();
         User user;
@@ -29,6 +28,7 @@ public class App {
                 }
             } while (user == null);
             System.out.println("\n:::::::::::inicio de sesión exitoso::::::::::::::");
+            s1.updateUserHistory(user, "El usuario inició sesión.");
 
             // MENU USUARIO UNA VEZ INICIA SESIÓN-------------------
             Integer answer = 0;
@@ -74,6 +74,7 @@ public class App {
                         case 1:
                             if (isAdmin(user, s1)) {
                                 s1.addUser(user, askName(input), askPassword(input), askRole(input));
+                                s1.updateUserHistory(user,"El usuario " + s1.getuserName(user, user) + " agregó un usuario.");
                             } else {
                                 System.out.println("su rol de usuario no tiene permitida esta acción");
                             }
@@ -83,18 +84,20 @@ public class App {
                             if (isAdmin(user, s1)) {
                                 User userToDelete = s1.findUserByUserName(user, askUserName(input));
 
-                                if (userToDelete == s1.getUsers(user)[0]) {
+                                if (userToDelete == UserSystem.getUsers(user)[0]) {
                                     System.out.println("No puede eliminarse al administrador principal");
                                     break;
                                 }
                                 // si se elimino a si mismo, cerrar sesion
                                 if (userToDelete == user) {
+                                    s1.updateUserHistory(user, "El usuario eliminó al usuario " + s1.getName(user, userToDelete));
                                     s1.deleteUser(user, userToDelete);
                                     System.out.println("\n------------------------------------------------------");
                                     System.out.println("\n-------------------sesión terminada-----------------\n");
                                     System.out.println("------------------------------------------------------\n");
                                     exit = true;
                                 } else {
+                                    s1.updateUserHistory(user, "El usuario eliminó al usuario " + s1.getName(user, userToDelete));
                                     s1.deleteUser(user, userToDelete);
                                 }
                             } else {
@@ -105,10 +108,11 @@ public class App {
                             if (isAdmin(user, s1)) {
                                 User userToModify = s1.findUserByUserName(user, askUserName(input));
 
-                                if (userToModify == s1.getUsers(user)[0]) {
+                                if (userToModify == UserSystem.getUsers(user)[0]) {
                                     System.out.println("No puede cambiarse el rol del administrador principal");
                                     break;
                                 } else {
+                                    s1.updateUserHistory(user, "El usuario modificó un rol de usuario");
                                     s1.setRole(user, userToModify, askRole(input));
                                 }
                             } else {
@@ -123,6 +127,7 @@ public class App {
 
                             Role role = s1.getRole(user, userToConsult);
                             System.out.println("el rol del usuario es: " + role);
+                            s1.updateUserHistory(user, "El usuario consulto un rol de usuario.");
                             break;
                         case 5:
                             System.out.print("nombre de usuario del usuario a quien desea asignar nombre completo: ");
@@ -134,6 +139,7 @@ public class App {
                             }
 
                             s1.setName(user, targetUser, askName(input));
+                            s1.updateUserHistory(user, "El usuario asignó un nombre completo.");
                             break;
                         case 6:
                             userToConsult = s1.findUserByUserName(user, askUserName(input));
@@ -143,6 +149,7 @@ public class App {
 
                             String name = s1.getName(user, userToConsult);
                             System.out.println("el nombre completo del usuario es: " + name);
+                            s1.updateUserHistory(user, "El usuario consultó un nombre completo.");
                             break;
                         case 7:
                             userToConsult = s1.findUserByUserName(user, askUserName(input));
@@ -154,12 +161,14 @@ public class App {
                                 System.out.print("password nuevo: ");
                                 String newPassword = input.nextLine();
                                 s1.setPassword(user, userToConsult, null, newPassword);
+                                s1.updateUserHistory(user, "El usuario modificó un password.");
                             } else {
                                 System.out.print("password actual: ");
                                 String oldPassword = input.nextLine();
                                 System.out.print("password nuevo: ");
                                 String newPassword = input.nextLine();
                                 s1.setPassword(user, userToConsult, oldPassword, newPassword);
+                                s1.updateUserHistory(user, "El usuario modificó un password.");
                             }
                             break;
                         case 8:
@@ -171,6 +180,7 @@ public class App {
 
                             String password = s1.getPassword(user, userToConsult);
                             System.out.println("la contraseña del usuario es: " + password);
+                            s1.updateUserHistory(user, "El usuario consultó un password");
                             break;
                         case 9:
                             if (isAdmin(user, s1)) {
@@ -183,6 +193,7 @@ public class App {
                                 System.out.print("nuevo ID de usuario: ");
                                 Integer newUserId = Integer.parseInt(input.nextLine());
                                 s1.setuserId(user, userToConsult, newUserId);
+                                s1.updateUserHistory(user, "El usuario asignó un Id de usuario.");
                             } else {
                                 System.out.println("Su rol de usuario no tiene permitida esta acción");
                             }
@@ -197,6 +208,7 @@ public class App {
 
                                 Integer userId = s1.getuserId(user, userToConsult);
                                 System.out.print("el ID del usuario es: " + userId);
+                                s1.updateUserHistory(user, "El usuario consultó un Id de usuario.");
                             } else {
                                 System.out.println("Su rol de usuario no tiene permitida esta acción");
                             }
@@ -211,9 +223,10 @@ public class App {
                             System.out.print("nuevo nombre de usuario: ");
                             String newUserName = input.nextLine();
                             s1.setuserName(user, userToConsult, newUserName);
+                            s1.updateUserHistory(user, "El usuario asignó un nombre de usuario.");
                             break;
                         case 12:
-                            userToConsult = s1.findUserByUserName(user, askUserName(input));
+                            userToConsult = s1.findUserById(user, askUserId(input));
 
                             if (userToConsult == null) {
                                 break;
@@ -221,6 +234,7 @@ public class App {
 
                             String userNameConsult = s1.getuserName(user, userToConsult);
                             System.out.print("el nombre de usuario del usuario solicitado es: " + userNameConsult);
+                            s1.updateUserHistory(user, "El usuario consultó un nombre de usuario.");
                             break;
                         case 13:
                             System.out.print("ID del usuario a consultar: ");
@@ -232,6 +246,7 @@ public class App {
                             }
 
                             s1.printUserData(user, userToConsult);
+                            s1.updateUserHistory(user, "El usuario consultó los datos básicos de un usuario.");
                             break;
                         case 14:
                             System.out.print("nombre de usuario del usuario a consultar: ");
@@ -243,6 +258,7 @@ public class App {
                             }
 
                             s1.printUserData(user, userToConsult);
+                            s1.updateUserHistory(user, "El usuario consultó los datos básicos de un usuario.");
                             break;
 
                         case 15:
@@ -255,7 +271,8 @@ public class App {
 
                                 System.out.print("descripción del evento realizado por el usuario: ");
                                 String event = input.nextLine();
-                                s1.updateUserHistory(userToConsult, event);
+                                s1.updateUserHistoryCase15(user,userToConsult, event);
+                                s1.updateUserHistory(user, "El usuario registro un evento en un historial de usuario.");
                             } else {
                                 System.out.println(
                                         "Su rol de usuario no tiene permitido modificar historiales de usuario");
@@ -271,6 +288,7 @@ public class App {
 
                                 System.out.println("\n:::::Historial de usuario:::::");
                                 System.out.println(s1.getUserStory(user, userToConsult));
+                                s1.updateUserHistory(user, "El usuario consultó un historial de usuario.");
                             } else {
                                 System.out.println(
                                         "Su rol de usuario no tiene permitido consultar historiales de usuario");
@@ -278,6 +296,7 @@ public class App {
                             break;
                         case 17:
                             exit = true;
+                            s1.updateUserHistory(user, "El usuario cerró sesión.");
                             System.out.println("\n------------------------------------------------------");
                             System.out.println("\n-------------------sesión terminada-----------------\n");
                             System.out.println("------------------------------------------------------\n");
@@ -292,8 +311,6 @@ public class App {
             } while (exit == false);
 
         } while (true);
-
-        // input.close();
 
     }
 
@@ -329,9 +346,15 @@ public class App {
         return userName;
     }
 
+    public static Integer askUserId(Scanner input) {
+        System.out.print("ID del usuario objetivo: ");
+        Integer userId = Integer.parseInt(input.nextLine());
+        return userId;
+    }
+
     public static void pauseGenerator(Scanner input) {
         System.out.println("\nPresione ENTER para continuar: ");
-        String string = input.nextLine();
+        input.nextLine();
     }
 
 }
