@@ -51,7 +51,9 @@ public class App {
                 System.out.println("12. consultar nombre de usuario");
                 System.out.println("13. buscar usuario por ID");
                 System.out.println("14. buscar usuario por nombre de usuario");
-                System.out.println("15. cerrar sesión");
+                System.out.println("15. registrar evento en el historial de un usuario");
+                System.out.println("16. consultar historial de usuario");
+                System.out.println("17. cerrar sesión");
                 System.out.println();
                 System.out.print("Escriba una opción: ");
 
@@ -63,7 +65,7 @@ public class App {
                     continue;
                 }
 
-                if (answer < 1 || answer > 15) {
+                if (answer < 1 || answer > 17) {
                     System.err.println("Respuesta invalida. Intentelo nuevamente");
                 } else {
                     User userToConsult;
@@ -242,7 +244,39 @@ public class App {
 
                             s1.printUserData(user, userToConsult);
                             break;
+
                         case 15:
+                            if (isAdmin(user, s1)) {
+                                userToConsult = s1.findUserByUserName(user, askUserName(input));
+
+                                if (userToConsult == null) {
+                                    break;
+                                }
+
+                                System.out.print("descripción del evento realizado por el usuario: ");
+                                String event = input.nextLine();
+                                s1.updateUserHistory(userToConsult, event);
+                            } else {
+                                System.out.println(
+                                        "Su rol de usuario no tiene permitido modificar historiales de usuario");
+                            }
+                            break;
+                        case 16:
+                            if (isAdmin(user, s1)) {
+                                userToConsult = s1.findUserByUserName(user, askUserName(input));
+
+                                if (userToConsult == null) {
+                                    break;
+                                }
+
+                                System.out.println("\n:::::Historial de usuario:::::");
+                                System.out.println(s1.getUserStory(user, userToConsult));
+                            } else {
+                                System.out.println(
+                                        "Su rol de usuario no tiene permitido consultar historiales de usuario");
+                            }
+                            break;
+                        case 17:
                             exit = true;
                             System.out.println("\n------------------------------------------------------");
                             System.out.println("\n-------------------sesión terminada-----------------\n");
@@ -295,7 +329,7 @@ public class App {
         return userName;
     }
 
-    public static void pauseGenerator(Scanner input){
+    public static void pauseGenerator(Scanner input) {
         System.out.println("\nPresione ENTER para continuar: ");
         String string = input.nextLine();
     }

@@ -6,8 +6,8 @@ public class UserSystem {
     private static User[] users = new User[100];
     private static int usersIndex = 0;
 
-    public UserSystem(){
-        if(usersIndex == 0){
+    public UserSystem() {
+        if (usersIndex == 0) {
             Scanner input = new Scanner(System.in);
             System.out.println(":::::::::Primer uso del sistema:::::::::\n");
             System.out.print("Nombre del administrador: ");
@@ -23,9 +23,10 @@ public class UserSystem {
         }
     }
 
-    public User logIn(String userName, String password){
-        for(User user: users){
-            if(user != null && user.getuserName().equals(userName) && user.getPassword().equals(password)){
+    public User logIn(String userName, String password) {
+        for (User user : users) {
+            if (user != null && user.getuserName().equals(userName) && user.getPassword().equals(password)) {
+                updateUserHistory(user, "El usuario" + user.getuserName() + "inició sesión.");
                 return user;
             }
         }
@@ -41,8 +42,9 @@ public class UserSystem {
         if (creator.getRole() == Role.ADMIN) {
             users[usersIndex++] = new User(name, password, role);
             System.out.println("\nUsuario añadido exitosamente\n");
-            System.out.println("nombre de usuario: " + users[usersIndex-1].getuserName());
-            System.out.println("contraseña: " + users[usersIndex-1].getPassword());
+            System.out.println("nombre de usuario: " + users[usersIndex - 1].getuserName());
+            System.out.println("contraseña: " + users[usersIndex - 1].getPassword());
+            updateUserHistory(creator, "El usuario añadió a al usuario " + users[usersIndex - 1].getuserName());
         } else {
             System.err.println("Su rol es " + creator.getRole() + ". No puede agregar usuarios");
         }
@@ -58,7 +60,7 @@ public class UserSystem {
             for (int i = 0; i < usersIndex; i++) {
 
                 if (users[i] == targetUser) {
-
+                    updateUserHistory(userAsking, "El usuario eliminó al usuario " + targetUser.getuserName());
                     // se corre el arreglo hacia la izquierda para ocupar el espacio del eliminado
                     for (int j = i; j < usersIndex - 1; j++) {
                         users[j] = users[j + 1];
@@ -89,6 +91,7 @@ public class UserSystem {
         if (userAsking.getRole() == Role.ADMIN) {
             targetUser.setRole(role);
             System.out.println("Rol cambiado exitosamente");
+            updateUserHistory(userAsking, "El usuario modificó el rol de usuario del usuario " + targetUser.getuserName());
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole() + ". No puede cambiar roles");
         }
@@ -102,6 +105,7 @@ public class UserSystem {
      */
     public Role getRole(User userAsking, User targetUser) {
         if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
+            updateUserHistory(userAsking, "El usuario consultó el rol de " + targetUser.getRole());
             return targetUser.getRole();
         } else {
             System.out.println("Su rol de usario es " + userAsking.getRole()
@@ -119,6 +123,7 @@ public class UserSystem {
     public void setName(User userAsking, User targetUser, String name) {
         if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             targetUser.setName(name);
+            updateUserHistory(userAsking,"el usuario asigno el nombre completo de " + targetUser.getuserName());
             System.out.println("nombre asignado exitosamente");
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -134,6 +139,7 @@ public class UserSystem {
      */
     public String getName(User userAsking, User targetUser) {
         if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
+            updateUserHistory(userAsking,"el usuario consultó el nombre completo de " + targetUser.getuserName());
             return targetUser.getName();
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -150,10 +156,12 @@ public class UserSystem {
     public void setPassword(User userAsking, User targetUser, String oldPassword, String newPassword) {
         if (userAsking.getRole() == Role.ADMIN) {
             targetUser.setPassword(newPassword);
+            updateUserHistory(userAsking,"el usuario reestableció la contraseña de " + targetUser.getuserName());
             System.out.println("contraseña reestablecida");
         } else {
             if (targetUser.getPassword().equals(oldPassword)) {
                 targetUser.setPassword(newPassword);
+                updateUserHistory(userAsking,"el usuario reestableció la contraseña de " + targetUser.getuserName());
                 System.out.println("\ncontraseña reestablecida");
             } else {
                 System.out.println("contraseña invalida o su rol no es de administrador");
@@ -170,6 +178,7 @@ public class UserSystem {
      */
     public String getPassword(User userAsking, User targetUser) {
         if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
+            updateUserHistory(userAsking,"el usuario consultó la contraseña de " + targetUser.getuserName());
             return targetUser.getPassword();
         } else {
             System.out.println(
@@ -194,6 +203,7 @@ public class UserSystem {
                 }
             }
             targetUser.setUserId(newUserId);
+            updateUserHistory(userAsking,"el usuario cambió el ID de " + targetUser.getuserName());
             System.out.println("ID de usuario cambiado exitosamente");
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -209,6 +219,7 @@ public class UserSystem {
      */
     public Integer getuserId(User userAsking, User targetUser) {
         if (userAsking.getRole() == Role.ADMIN) {
+            updateUserHistory(userAsking,"el usuario consultó el ID de " + targetUser.getuserName());
             return targetUser.getuserId();
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -233,6 +244,7 @@ public class UserSystem {
                 }
             }
             targetUser.setUserName(newUserName);
+            updateUserHistory(userAsking,"el usuario asigno el nombre de usuario del usuario con ID: " + targetUser.getuserId());
             System.out.println("nombre de usuario cambiado exitosamente");
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -248,6 +260,7 @@ public class UserSystem {
      */
     public String getuserName(User userAsking, User targetUser) {
         if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
+            updateUserHistory(userAsking,"el usuario consultó el nombre de usuario de " + targetUser.getuserName());
             return targetUser.getuserName();
         } else {
             System.out.println("Su rol de usuario es " + userAsking.getRole()
@@ -268,6 +281,7 @@ public class UserSystem {
         if (userAsking.getRole() == Role.ADMIN || userAsking.getuserId() == userId) {
             for (int i = 0; i < usersIndex; i++) {
                 if (users[i] != null && users[i].getuserId().equals(userId)) {
+                    updateUserHistory(userAsking,"el usuario consultó por Id al usuario " + users[i].getuserName());
                     return users[i];
                 }
             }
@@ -292,6 +306,7 @@ public class UserSystem {
         if (userAsking.getRole() == Role.ADMIN || userAsking.getuserName().equals(userName)) {
             for (int i = 0; i < usersIndex; i++) {
                 if (users[i] != null && users[i].getuserName().equals(userName)) {
+                    updateUserHistory(userAsking,"el usuario buscó por nombre de usuario a " + users[i].getuserName());
                     return users[i];
                 }
             }
@@ -304,13 +319,14 @@ public class UserSystem {
         }
     }
 
-    public void printUserData(User userAsking, User targetUser){
-        if(userAsking.getRole() == Role.ADMIN || userAsking == targetUser){
+    public void printUserData(User userAsking, User targetUser) {
+        if (userAsking.getRole() == Role.ADMIN || userAsking == targetUser) {
             String userData = targetUser.userData();
+            updateUserHistory(userAsking,"el usuario consultó los datos básicos de " + targetUser.getuserName());
             System.out.println(userData);
-        }else{
+        } else {
             System.out.println("Su rol del usuario es " + userAsking.getRole()
-            + ". No tiene permitido consultar o modificar la información de otros usuarios");
+                    + ". No tiene permitido consultar o modificar la información de otros usuarios");
         }
     }
 
@@ -332,18 +348,22 @@ public class UserSystem {
         }
     }
 
-    // TODO: borrar el metodo imprimir
-    public void imprimir(User userAsking) {
-        for (User u : users) {
-            if (u != null) {
-                System.out.println();
-                System.out.println("name: " + getName(userAsking, u));
-                System.out.println("userId: " + getuserId(userAsking, u));
-                System.out.println("userName: " + getuserName(userAsking, u));
-                System.out.println("role: " + getRole(userAsking, u));
-                System.out.println("password: " + getPassword(userAsking, u));
-                System.out.println();
-            }
+    //TODO: pensar solucion para registrar en el historiral cuando registrar en el historial se usa
+    public void updateUserHistory(User userToModify, String event) {
+        event = event + "\nmarca de tiempo: " + System.currentTimeMillis();
+        userToModify.setUserHistory(event);
+    }
+
+    public String getUserStory(User userAsking, User targUser) {
+        if (userAsking.getRole() == Role.ADMIN) {
+            updateUserHistory(userAsking,"el usuario consultó el historial de usuario de " + targUser.getuserName());
+            return targUser.getUserHistory();
+        } else {
+            System.out.println("Su rol de usuario es " + userAsking.getRole()
+                    + ". No tiene permitido consultar el historial de los usuarios");
+            return null;
         }
     }
+
+
 }

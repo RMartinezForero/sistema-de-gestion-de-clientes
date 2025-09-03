@@ -7,6 +7,7 @@ public class User {
     private static Integer id_generator = 0;
     private Integer userId;
     private String userName;
+    private String userHistory;
 
     public User(String name, String password, Role role) {
         this.name = name;
@@ -14,6 +15,7 @@ public class User {
         this.role = role;
         this.userId = id_generator++;
         this.userName = name + userId;
+        this.userHistory = "";
     }
 
     // el modificador de acceso de todos los getters y setters es default para que App (capa vista)
@@ -64,5 +66,15 @@ public class User {
         return "User [name=" + name + ", password=" + password + ", role=" + role + ", userId=" + userId + ", userName="
                 + userName + "]";
     }
+
+    String getUserHistory() {
+        return userHistory;
+    }
+
+    void setUserHistory(String userHistory) {
+        this.userHistory = this.userHistory + "\nevento: " + userHistory + "\n";
+    }
+
+    
 
 }
